@@ -758,6 +758,7 @@ scene.add(pointLight);
     document.getElementById('bondButton').addEventListener('click', createMolecule);
     document.getElementById('clearButton').addEventListener('click', clearScene);
 
+
     let xrSession = null;
 
 document.getElementById('arButton').addEventListener('click', () => {
@@ -769,6 +770,11 @@ document.getElementById('arButton').addEventListener('click', () => {
             renderer.xr.enabled = true;
             renderer.xr.setReferenceSpaceType('local');
             renderer.xr.setSession(session);
+
+            // Hide ground and background for AR mode
+            scene.background = null;  // Remove background
+            scene.remove(groundPlane); // Remove ground plane
+
             animateAR();
         }).catch(console.error);
     } else {
@@ -783,13 +789,15 @@ function animateAR() {
     });
 }
 
-// Optional: End AR session
+// End AR session handling
 if (xrSession) {
     xrSession.addEventListener('end', () => {
         renderer.xr.enabled = false;
+        // Restore the ground and background after AR session
+        scene.background = new THREE.Color(0x87CEEB);
+        scene.add(groundPlane);
     });
 }
-
 
     // Update window resize handler to include label renderer
     window.addEventListener('resize', () => {
